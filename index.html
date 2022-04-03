@@ -15,11 +15,9 @@
   <body>
     <div>
       <div
-        class="bg-yellow-200 border-b border-yellow-600 p-1 text-center flex justify-center items-start"
-      >
-        <img id="canhazimg" style="width: 32px" />
-        <p id="canhazwebxr" style="margin-left: 48px"></p>
-      </div>
+        class="border-b border-yellow-600 bg-yellow-200 p-1 text-xs"
+        id="canhazwebxr"
+      ></div>
     </div>
     <script>
       function isMobile(global) {
@@ -41,38 +39,40 @@
       }
 
       let canhazElement = document.getElementById("canhazwebxr");
-      let canhazImg = document.getElementById("canhazimg");
       if ("xr" in navigator) {
+        let vrSupported = false;
+        let arSupported = false;
         canhazElement.innerText =
-          "Your browser implements the WebXR API and may be able to run Virtual Reality or Augmented Reality experiences if you are using a supported OS and the appropriate hardware.";
+          "✔️- Your browser implements the WebXR API and may be able to run Virtual Reality or Augmented Reality experiences if you are using a supported OS and the appropriate hardware.";
         navigator.xr.isSessionSupported("immersive-vr").then((supported) => {
           const span = document.createElement("span");
           span.innerText = supported
-            ? "✔️- VR support detected"
+            ? "✔️ - VR support detected"
             : "❌ - VR support not detected";
           canhazElement.appendChild(document.createElement("br"));
           canhazElement.appendChild(span);
+          vrSupported = true;
         });
         navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
           const span = document.createElement("span");
           span.innerText = supported
-            ? "✔️- AR support detected"
+            ? "✔️ - AR support detected"
             : "❌ - AR support not detected";
           canhazElement.appendChild(document.createElement("br"));
           canhazElement.appendChild(span);
+          arSupported = true;
         });
-        canhazImg.src = "media/textures/check-button.png";
+        // If all supported, hide the canhaz element, user doesnt need to know
+        if (vrSupported && arSupported) zanhazElement.hidden = true;
       } else if ("getVRDisplays" in navigator) {
         canhazElement.innerText =
-          "Your browser does not support WebXR, but does support the deprecated WebVR API. You may be able to run Virtual Reality experiences on sites that use the WebXR Polyfill, like this one!";
-        canhazImg.src = "media/textures/info-button.png";
+          "ℹ️ - Your browser does not support WebXR, but does support the deprecated WebVR API. You may be able to run Virtual Reality experiences on sites that use the WebXR Polyfill, like this one!";
       } else if (isMobile(window)) {
         canhazElement.innerText =
-          "Your browser does not support WebXR, but you appear to be using a mobile device. You may be able to run Virtual Reality experiences on sites that use the WebXR Polyfill, like this one!";
-        canhazImg.src = "media/textures/info-button.png";
+          "ℹ️ - Your browser does not support WebXR, but you appear to be using a mobile device. You may be able to run Virtual Reality experiences on sites that use the WebXR Polyfill, like this one!";
       } else {
-        canhazElement.innerText = "Sorry, your browser does not support WebXR.";
-        canhazImg.src = "media/textures/x-button.png";
+        canhazElement.innerText =
+          "❌ - Sorry, your browser does not support WebXR.";
       }
     </script>
     <!-- Starting an immersive WebXR session requires user interaction.
