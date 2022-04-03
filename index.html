@@ -52,6 +52,7 @@
           canhazElement.appendChild(document.createElement("br"));
           canhazElement.appendChild(span);
           vrSupported = true;
+          cb();
         });
         navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
           const span = document.createElement("span");
@@ -61,9 +62,12 @@
           canhazElement.appendChild(document.createElement("br"));
           canhazElement.appendChild(span);
           arSupported = true;
+          cb();
         });
-        // If all supported, hide the canhaz element, user doesnt need to know
-        if (vrSupported && arSupported) zanhazElement.hidden = true;
+        cb = () => {
+          // If all supported, hide the canhaz element, user doesnt need to know
+          if (vrSupported && arSupported) canhazElement.hidden = true;
+        };
       } else if ("getVRDisplays" in navigator) {
         canhazElement.innerText =
           "ℹ️ - Your browser does not support WebXR, but does support the deprecated WebVR API. You may be able to run Virtual Reality experiences on sites that use the WebXR Polyfill, like this one!";
