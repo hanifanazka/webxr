@@ -43,7 +43,7 @@
         let vrSupported = false;
         let arSupported = false;
         canhazElement.innerText =
-          "✔️- Your browser implements the WebXR API and may be able to run Virtual Reality or Augmented Reality experiences if you are using a supported OS and the appropriate hardware.";
+          "✔️ - Your browser implements the WebXR API and may be able to run Virtual Reality or Augmented Reality experiences if you are using a supported OS and the appropriate hardware.";
         navigator.xr.isSessionSupported("immersive-vr").then((supported) => {
           const span = document.createElement("span");
           span.innerText = supported
