@@ -10,7 +10,9 @@
     <link href="output.css" rel="stylesheet" />
 
     <!-- three.js -->
-    <script src="https://unpkg.com/three@0.126.0/build/three.js"></script>
+    <script src="https://unpkg.com/three@0.139.2/build/three.js"></script>
+    <script src="https://unpkg.com/three@0.139.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://unpkg.com/three@0.139.2/examples/js/loaders/RGBELoader.js"></script>
   </head>
   <body>
     <div>
@@ -108,7 +110,24 @@
           materials
         );
         cube.position.set(0, 0, -1);
-        scene.add(cube);
+        // scene.add(cube);
+
+        new THREE.RGBELoader()
+          .setPath("textures/equirectangular/")
+          .load("venice_sunset_1k.hdr", function (texture) {
+            texture.mapping = THREE.EquirectangularReflectionMapping;
+
+            // scene.background = texture;
+            scene.environment = texture;
+
+            const loader = new THREE.GLTFLoader().setPath(
+              "models/gltf/DamagedHelmet/glTF/"
+            );
+            loader.load("DamagedHelmet.gltf", function (gltf) {
+              gltf.scene.position.set(0, 0, -2);
+              scene.add(gltf.scene);
+            });
+          });
 
         // Set up the WebGLRenderer, which handles rendering to the session's base layer.
         const renderer = new THREE.WebGLRenderer({
