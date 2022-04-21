@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <title>Hello WebXR!</title>
+    <link href="output.css" rel="stylesheet" />
+
+    <!-- three.js -->
+    <!-- <script src="https://unpkg.com/three@0.139.2/build/three.js"></script> -->
+    <!-- <script src="https://unpkg.com/three@0.139.2/examples/js/loaders/GLTFLoader.js"></script> -->
+    <!-- <script src="https://unpkg.com/three@0.139.2/examples/js/loaders/RGBELoader.js"></script> -->
+  </head>
+  <body>
+    <!-- Import maps polyfill -->
+    <!-- Remove this when import maps will be widely supported -->
+    <script
+      async
+      src="https://unpkg.com/es-module-shims@1.5.4/dist/es-module-shims.js"
+    ></script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.139.2/build/three.module.js",
+          "TransformControls.js": "https://unpkg.com/three@0.139.2/examples/jsm/controls/TransformControls.js",
+          "GLTFLoader.js": "https://unpkg.com/three@0.139.2/examples/jsm/loaders/GLTFLoader.js"
+        }
+      }
+    </script>
+
+    <script type="module">
+      import * as THREE from "three";
+      import { TransformControls } from "TransformControls.js";
+      import { GLTFLoader } from "GLTFLoader.js";
+
+      let scene, renderer, object, camera, control;
+
+      init();
+      render();
+
+      function init() {
+        // Add a canvas element and initialize a WebGL context that is compatible with WebXR.
+        const canvas = document.createElement("canvas");
+        document.body.appendChild(canvas);
+        const gl = canvas.getContext("webgl", { xrCompatible: true });
+
+        scene = new THREE.Scene();
+
+        // Set up the WebGLRenderer, which handles rendering to the session's base layer.
+        renderer = new THREE.WebGLRenderer({
+          alpha: true,
+          preserveDrawingBuffer: true,
+          canvas: canvas,
+          context: gl,
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const aspect = window.innerWidth / window.innerHeight;
+
+        camera = new THREE.PerspectiveCamera(undefined, aspect);
+        camera.position.z = 5;
+
+        const loader = new GLTFLoader().setPath(
+          "models/gltf/DamagedHelmet/glTF/"
+        );
+        loader.load("DamagedHelmet.gltf", function (gltf) {
+          object = gltf.scene;
+          object.position.set(0, 0, -2);
+          scene.add(object);
+
+          requestAnimationFrame(onFrame);
+
+          control = new TransformControls(camera, canvas);
+          control.addEventListener("change", render);
+          control.attach(object);
+          scene.add(control);
+        });
+
+        const light = new THREE.DirectionalLight(0xffffff, 2);
+        light.position.set(1, 1, 1);
+        light.power = 800; // ref for lumens: http://www.power-sure.com/lumens.htm
+        scene.add(light);
+
+        const hemiLight = new THREE.HemisphereLight(0xddeeff, 0x0f0e0d, 0.02);
+        hemiLight.intensity = 10; // ref for solar irradiances: https://en.wikipedia.org/wiki/Lux
+        scene.add(hemiLight);
+
+        window.addEventListener("resize", onWindowResize);
+      }
+
+      function render() {
+        // Render the scene with THREE.WebGLRenderer
+        renderer.render(scene, camera);
+      }
+
+      // Create a render loop that allows us to draw on the view
+      function onFrame() {
+        // Queue up the next draw request.
+        requestAnimationFrame(onFrame);
+
+        object.rotation.x += 0.01;
+        object.rotation.y += 0.01;
+
+        render();
+      }
+
+      function onWindowResize() {
+        const aspect = window.innerWidth / window.innerHeight;
+
+        camera.aspect = aspect;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        render();
+      }
+    </script>
+  </body>
+</html>
