@@ -6,11 +6,11 @@ import { runCheck } from "./check.js";
 
 let scene, renderer, object, camera, control;
 
-runCheck()
-init();
-render();
+const XRSUPPORTED = runCheck();
+if (XRSUPPORTED) null;
+else initFallback();
 
-function init() {
+function initFallback() {
   // Add a canvas element and initialize a WebGL context that is compatible with WebXR.
   const canvas = document.createElement("canvas");
   document.body.appendChild(canvas);

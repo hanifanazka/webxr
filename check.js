@@ -63,4 +63,5 @@ function runCheck() {
   }
 
   if (shouldInformUser) document.body.appendChild(canhazElement);
+  return !shouldInformUser
 }
