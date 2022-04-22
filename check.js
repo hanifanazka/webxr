@@ -17,7 +17,11 @@ function isMobile(global) {
 }
 
 function runCheck() {
-  let canhazElement = document.getElementById("canhazwebxr");
+  let shouldInformUser = true;
+
+  const canhazElement = document.createElement("div");
+  canhazElement.className = "border-b border-yellow-600 bg-yellow-200 p-1 text-xs fixed top-0 w-full"
+
   if ("xr" in navigator) {
     let vrSupported = false;
     let arSupported = false;
@@ -45,7 +49,7 @@ function runCheck() {
     });
     cb = () => {
       // If all supported, hide the canhaz element, user doesnt need to know
-      if (vrSupported && arSupported) canhazElement.hidden = true;
+      if (vrSupported && arSupported) shouldInformUser = false;
     };
   } else if ("getVRDisplays" in navigator) {
     canhazElement.innerText =
@@ -57,4 +61,6 @@ function runCheck() {
     canhazElement.innerText =
       "❌ - Sorry, your browser does not support WebXR.";
   }
+
+  if (shouldInformUser) document.body.appendChild(canhazElement);
 }
