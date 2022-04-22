@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "concurrently \"npm run dev:css\" \"npx http-server .\"",
+    "dev": "concurrently \"npm run dev:css\" \"npx http-server . -c-1\"",
     "dev:css": "npx tailwindcss -i ./styles.css -o ./output.css --watch"
   },
   "devDependencies": {
