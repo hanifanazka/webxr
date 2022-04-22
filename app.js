@@ -2,9 +2,11 @@ import * as THREE from "three";
 import { GLTFLoader } from "GLTFLoader.js";
 import { OrbitControls } from "OrbitControls.js";
 import { TransformControls } from "TransformControls.js";
+import { runCheck } from "./check.js";
 
 let scene, renderer, object, camera, control;
 
+runCheck()
 init();
 render();
 
