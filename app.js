@@ -3,12 +3,16 @@ import { GLTFLoader } from "GLTFLoader.js";
 import { OrbitControls } from "OrbitControls.js";
 import { TransformControls } from "TransformControls.js";
 import { runCheck } from "./check.js";
+import { activateXR } from "./appXR.js";
+
+window.activateXR = activateXR
 
 let scene, renderer, object, camera, control;
 
 const XRSUPPORTED = runCheck();
-if (XRSUPPORTED) null;
-else initFallback();
+// if (XRSUPPORTED) null;
+// else initFallback();
+initFallback();
 
 function initFallback() {
   // Add a canvas element and initialize a WebGL context that is compatible with WebXR.
@@ -25,16 +29,18 @@ function initFallback() {
     canvas: canvas,
     context: gl,
   });
+  renderer.autoClear = false;
   renderer.setSize(window.innerWidth, window.innerHeight);
   const aspect = window.innerWidth / window.innerHeight;
 
   camera = new THREE.PerspectiveCamera(undefined, aspect);
   camera.position.z = 5;
+  camera.matrixAutoUpdate = false;
 
   const loader = new GLTFLoader().setPath("models/gltf/DamagedHelmet/glTF/");
   loader.load("DamagedHelmet.gltf", function (gltf) {
     object = gltf.scene;
-    object.position.set(0, 0, 0);
+    object.position.set(0, 0, -2);
     scene.add(object);
 
     requestAnimationFrame(onFrame);
@@ -49,13 +55,13 @@ function initFallback() {
     orbitControl.maxDistance = 100;
     orbitControl.screenSpacePanning = false;
 
-    // control = new TransformControls(camera, canvas);
-    // control.attach(object);
-    // scene.add(control);
+    control = new TransformControls(camera, canvas);
+    control.attach(object);
+    scene.add(control);
 
-    // control.addEventListener("dragging-changed", function (event) {
-    //   orbitControl.enabled = !event.value;
-    // });
+    control.addEventListener("dragging-changed", function (event) {
+      orbitControl.enabled = !event.value;
+    });
   });
 
   const light = new THREE.DirectionalLight(0xffffff, 2);

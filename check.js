@@ -20,9 +20,15 @@ function runCheck() {
   let shouldInformUser = true;
 
   const canhazElement = document.createElement("div");
-  canhazElement.className = "border-b border-yellow-600 bg-yellow-200 p-1 text-xs fixed top-0 w-full"
+  canhazElement.className =
+    "border-b border-yellow-600 bg-yellow-200 p-1 text-xs fixed top-0 w-full";
+  canhazElement.style = "display: none";
 
   if ("xr" in navigator) {
+    const cb = () => {
+      // If all supported, hide the canhaz element, user doesnt need to know
+      if (vrSupported && arSupported) shouldInformUser = false;
+    };
     let vrSupported = false;
     let arSupported = false;
     canhazElement.innerText =
@@ -47,10 +53,6 @@ function runCheck() {
       arSupported = true;
       cb();
     });
-    cb = () => {
-      // If all supported, hide the canhaz element, user doesnt need to know
-      if (vrSupported && arSupported) shouldInformUser = false;
-    };
   } else if ("getVRDisplays" in navigator) {
     canhazElement.innerText =
       "ℹ️ - Your browser does not support WebXR, but does support the deprecated WebVR API. You may be able to run Virtual Reality experiences on sites that use the WebXR Polyfill, like this one!";
@@ -63,5 +65,5 @@ function runCheck() {
   }
 
   if (shouldInformUser) document.body.appendChild(canhazElement);
-  return !shouldInformUser
+  return !shouldInformUser;
 }

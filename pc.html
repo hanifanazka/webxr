@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <title>Hello WebXR!</title>
+    <link href="output.css" rel="stylesheet" />
+
+    <!-- three.js -->
+    <script src="https://unpkg.com/three@0.139.2/build/three.js"></script>
+    <script src="https://unpkg.com/three@0.139.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://unpkg.com/three@0.139.2/examples/js/loaders/RGBELoader.js"></script>
+  </head>
+  <body>
+    <div
+      class="border-b border-yellow-600 bg-yellow-200 p-1 text-xs"
+      id="canhazwebxr"
+    ></div>
+    <script>
+      function isMobile(global) {
+        let check = false;
+        (function (a) {
+          if (
+            /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(
+              a
+            ) ||
+            /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(
+              a.substr(0, 4)
+            )
+          )
+            check = true;
+        })(
+          global.navigator.userAgent || global.navigator.vendor || global.opera
+        );
+        return check;
+      }
+
+      let canhazElement = document.getElementById("canhazwebxr");
+      if ("xr" in navigator) {
+        let vrSupported = false;
+        let arSupported = false;
+        canhazElement.innerText =
+          "✔️ - Your browser implements the WebXR API and may be able to run Virtual Reality or Augmented Reality experiences if you are using a supported OS and the appropriate hardware.";
+        navigator.xr.isSessionSupported("immersive-vr").then((supported) => {
+          const span = document.createElement("span");
+          span.innerText = supported
+            ? "✔️ - VR support detected"
+            : "❌ - VR support not detected";
+          canhazElement.appendChild(document.createElement("br"));
+          canhazElement.appendChild(span);
+          vrSupported = true;
+          cb();
+        });
+        navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
+          const span = document.createElement("span");
+          span.innerText = supported
+            ? "✔️ - AR support detected"
+            : "❌ - AR support not detected";
+          canhazElement.appendChild(document.createElement("br"));
+          canhazElement.appendChild(span);
+          arSupported = true;
+          cb();
+        });
+        cb = () => {
+          // If all supported, hide the canhaz element, user doesnt need to know
+          if (vrSupported && arSupported) canhazElement.hidden = true;
+        };
+      } else if ("getVRDisplays" in navigator) {
+        canhazElement.innerText =
+          "ℹ️ - Your browser does not support WebXR, but does support the deprecated WebVR API. You may be able to run Virtual Reality experiences on sites that use the WebXR Polyfill, like this one!";
+      } else if (isMobile(window)) {
+        canhazElement.innerText =
+          "ℹ️ - Your browser does not support WebXR, but you appear to be using a mobile device. You may be able to run Virtual Reality experiences on sites that use the WebXR Polyfill, like this one!";
+      } else {
+        canhazElement.innerText =
+          "❌ - Sorry, your browser does not support WebXR.";
+      }
+    </script>
+    <!-- Starting an immersive WebXR session requires user interaction.
+    We start this one with a simple button. -->
+    <button onclick="activateXR()">Start Hello WebXR</button>
+    <script>
+      async function activateXR() {
+        // Add a canvas element and initialize a WebGL context that is compatible with WebXR.
+        const canvas = document.createElement("canvas");
+        document.body.appendChild(canvas);
+        const gl = canvas.getContext("webgl", { xrCompatible: true });
+
+        // To be continued in upcoming steps.
+        const scene = new THREE.Scene();
+
+        // The cube will have a different color on each side.
+        const materials = [
+          new THREE.MeshBasicMaterial({ color: 0xff0000 }),
+          new THREE.MeshBasicMaterial({ color: 0x0000ff }),
+          new THREE.MeshBasicMaterial({ color: 0x00ff00 }),
+          new THREE.MeshBasicMaterial({ color: 0xff00ff }),
+          new THREE.MeshBasicMaterial({ color: 0x00ffff }),
+          new THREE.MeshBasicMaterial({ color: 0xffff00 }),
+        ];
+
+        // Create the cube and add it to the demo scene.
+        const cube = new THREE.Mesh(
+          new THREE.BoxBufferGeometry(0.2, 0.2, 0.2),
+          materials
+        );
+        cube.position.set(0, 0, -1);
+        // scene.add(cube);
+
+        new THREE.RGBELoader()
+          .setPath("textures/equirectangular/")
+          .load("venice_sunset_1k.hdr", function (texture) {
+            texture.mapping = THREE.EquirectangularReflectionMapping;
+
+            // scene.background = texture;
+            scene.environment = texture;
+
+            const loader = new THREE.GLTFLoader().setPath(
+              "models/gltf/DamagedHelmet/glTF/"
+            );
+            loader.load("DamagedHelmet.gltf", function (gltf) {
+              gltf.scene.position.set(0, 0, -2);
+              scene.add(gltf.scene);
+            });
+          });
+
+        // Set up the WebGLRenderer, which handles rendering to the session's base layer.
+        const renderer = new THREE.WebGLRenderer({
+          alpha: true,
+          preserveDrawingBuffer: true,
+          canvas: canvas,
+          context: gl,
+        });
+        renderer.autoClear = false;
+
+        // The API directly updates the camera matrices.
+        // Disable matrix auto updates so three.js doesn't attempt
+        // to handle the matrices independently.
+        const camera = new THREE.PerspectiveCamera();
+        camera.matrixAutoUpdate = false;
+
+        // Initialize a WebXR session using "immersive-ar".
+        const session = await navigator.xr.requestSession("immersive-ar");
+        session.updateRenderState({
+          baseLayer: new XRWebGLLayer(session, gl),
+        });
+
+        // A 'local' reference space has a native origin that is located
+        // near the viewer's position at the time the session was created.
+        const referenceSpace = await session.requestReferenceSpace("local");
+
+        // Create a render loop that allows us to draw on the AR view.
+        const onXRFrame = (time, frame) => {
+          // Queue up the next draw request.
+          session.requestAnimationFrame(onXRFrame);
+
+          // Bind the graphics framebuffer to the baseLayer's framebuffer
+          gl.bindFramebuffer(
+            gl.FRAMEBUFFER,
+            session.renderState.baseLayer.framebuffer
+          );
+
+          // Retrieve the pose of the device.
+          // XRFrame.getViewerPose can return null while the session attempts to establish tracking.
+          const pose = frame.getViewerPose(referenceSpace);
+          if (pose) {
+            // In mobile AR, we only have one view.
+            const view = pose.views[0];
+
+            const viewport = session.renderState.baseLayer.getViewport(view);
+            renderer.setSize(viewport.width, viewport.height);
+
+            // Use the view's transform matrix and projection matrix to configure the THREE.camera.
+            camera.matrix.fromArray(view.transform.matrix);
+            camera.projectionMatrix.fromArray(view.projectionMatrix);
+            camera.updateMatrixWorld(true);
+
+            // Render the scene with THREE.WebGLRenderer.
+            renderer.render(scene, camera);
+          }
+        };
+        session.requestAnimationFrame(onXRFrame);
+      }
+    </script>
+  </body>
+</html>
